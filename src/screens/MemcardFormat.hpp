@@ -27,6 +27,7 @@ private:
     int result = -1;
     int port = 0;
 
+    bool IsProtected();
     void Format();
     void Render();
 

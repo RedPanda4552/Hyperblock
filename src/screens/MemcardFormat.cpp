@@ -13,10 +13,8 @@
 
 MemcardFormat* g_MemcardFormat;
 
-void MemcardFormat::Format()
+bool MemcardFormat::IsProtected()
 {
-    isProtected = false;
-
     mcGetDir(port, 0, "/*", 0, MAX_ENTRIES, mcDir);
     mcSync(0, NULL, &result);
 
@@ -26,18 +24,17 @@ void MemcardFormat::Format()
         {
             if (strcmp((const char*) mcDir[i].EntryName, str.c_str()) == 0)
             {
-                isProtected = true;
-                break;
+                return true;
             }
-        }
-
-        if (isProtected)
-        {
-            break;
         }
     }
 
-    if (!isProtected)
+    return false;
+}
+
+void MemcardFormat::Format()
+{
+    if (!IsProtected())
     {
         mcFormat(port, 0);
         mcSync(0, NULL, &result);
