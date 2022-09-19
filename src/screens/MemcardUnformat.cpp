@@ -1,5 +1,5 @@
 
-#include "MemcardFormat.hpp"
+#include "MemcardUnformat.hpp"
 
 #include "../Hyperblock.hpp"
 #include "../Pad.hpp"
@@ -11,9 +11,9 @@
 #include <string>
 #include <array>
 
-MemcardFormat* g_MemcardFormat;
+MemcardUnformat* g_MemcardUnformat;
 
-bool MemcardFormat::IsProtected()
+bool MemcardUnformat::IsProtected()
 {
     mcGetDir(port, 0, "/*", 0, MAX_ENTRIES, mcDir);
     mcSync(0, NULL, &result);
@@ -34,24 +34,24 @@ bool MemcardFormat::IsProtected()
     return false;
 }
 
-void MemcardFormat::Format()
+void MemcardUnformat::Unformat()
 {
     if (!IsProtected())
     {
-        mcFormat(port, 0);
+        mcUnformat(port, 0);
         mcSync(0, NULL, &result);
     }
     
-    isFormatting = false;
+    isUnformatting = false;
     Render();
 }
 
-void MemcardFormat::Init()
+void MemcardUnformat::Init()
 {
     Render();
 }
 
-void MemcardFormat::Tick()
+void MemcardUnformat::Tick()
 {
     if (Pad::Down())
     {
@@ -75,9 +75,9 @@ void MemcardFormat::Tick()
 
     if (Pad::Circle())
     {
-        isFormatting = true;
+        isUnformatting = true;
         Render();
-        Format();
+        Unformat();
     }
 
     if (Pad::Cross())
@@ -86,16 +86,16 @@ void MemcardFormat::Tick()
     }
 }
 
-void MemcardFormat::Render()
+void MemcardUnformat::Render()
 {
     scr_clear();
     scr_printf("================================================================================\n");
-    scr_printf("Hyperblock - Memory Card Format\n");
+    scr_printf("Hyperblock - Memory Card Unformat\n");
     scr_printf("================================================================================\n");
 
-    if (!isFormatting)
+    if (!isUnformatting)
     {
-        scr_printf("O = Format | X = Back\n\n");
+        scr_printf("O = Unformat | X = Back\n\n");
 
         scr_printf("%sMemory Card Port 0\n", (port == 0 ? "> " : ""));
         scr_printf("%sMemory Card Port 1\n\n", (port == 1 ? "> " : ""));
@@ -104,16 +104,16 @@ void MemcardFormat::Render()
         {
             if (!isProtected)
             {
-                scr_printf("Format result: %s\n", (result == 0 ? "Success" : "Error"));
+                scr_printf("Unformat result: %s\n", (result == 0 ? "Success" : "Error"));
             }
             else
             {
-                scr_printf("FreeMCBoot install detected, format aborted\n");
+                scr_printf("FreeMCBoot install detected, unformat aborted\n");
             }
         }
     }
     else
     {
-        scr_printf("Format in progress on memory card port %d...\n", port);
+        scr_printf("Unformat in progress on memory card port %d...\n", port);
     }
 }

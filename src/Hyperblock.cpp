@@ -5,6 +5,7 @@
 #include "screens/MainMenu.hpp"
 #include "screens/MemcardStatus.hpp"
 #include "screens/MemcardFormat.hpp"
+#include "screens/MemcardUnformat.hpp"
 #include "screens/FileWrite.hpp"
 #include "screens/Superblock.hpp"
 
@@ -79,6 +80,7 @@ int main()
 
     g_MemcardStatus = new MemcardStatus();
     g_MemcardFormat = new MemcardFormat();
+    g_MemcardUnformat = new MemcardUnformat();
     g_FileWrite = new FileWrite();
     g_Superblock = new Superblock();
 
@@ -105,6 +107,15 @@ int main()
                 }
 
                 g_MemcardFormat->Tick();
+                break;
+            case Screen::MC_UNFORMAT:
+                if (lastScreen != Screen::MC_UNFORMAT)
+                {
+                    g_MemcardUnformat->Init();
+                    lastScreen = currentScreen;
+                }
+
+                g_MemcardUnformat->Tick();
                 break;
             case Screen::FILE_WRITE:
                 if (lastScreen != Screen::FILE_WRITE)
