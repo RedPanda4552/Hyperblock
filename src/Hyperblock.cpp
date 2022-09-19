@@ -6,6 +6,7 @@
 #include "screens/MemcardStatus.hpp"
 #include "screens/MemcardFormat.hpp"
 #include "screens/FileWrite.hpp"
+#include "screens/Superblock.hpp"
 
 #include <kernel.h>
 #include <sifrpc.h>
@@ -79,6 +80,8 @@ int main()
     g_MemcardStatus = new MemcardStatus();
     g_MemcardFormat = new MemcardFormat();
     g_FileWrite = new FileWrite();
+    g_Superblock = new Superblock();
+
     while (true)
     {
         Pad::Poll();
@@ -111,6 +114,15 @@ int main()
                 }
 
                 g_FileWrite->Tick();
+                break;
+            case Screen::SUPERBLOCK:
+                if (lastScreen != Screen::SUPERBLOCK)
+                {
+                    g_Superblock->Init();
+                    lastScreen = currentScreen;
+                }
+
+                g_Superblock->Tick();
                 break;
             case Screen::EXIT:
                 Exit(0);
