@@ -25,12 +25,12 @@ void Hyperblock::ChangeScreen(Screen screen)
 
 void LoadModules()
 {
-    printf("LoadModules()\n");
+    scr_printf("LoadModules()\n");
     int ret = SifLoadModule("rom0:SIO2MAN", 0, NULL);
 
     if (ret < 0)
     {
-        printf("SifLoadModule SIO2MAN failed: %d\n", ret);
+        scr_printf("SifLoadModule SIO2MAN failed: %d\n", ret);
         SleepThread();
     }
 
@@ -38,7 +38,7 @@ void LoadModules()
 
     if (ret < 0)
     {
-        printf("SifLoadModule PADMAN failed: %d\n", ret);
+        scr_printf("SifLoadModule PADMAN failed: %d\n", ret);
         SleepThread();
     }
 
@@ -46,7 +46,7 @@ void LoadModules()
 	
     if (ret < 0)
     {
-		printf("SifLoadModule MCMAN failed: %d\n", ret);
+		scr_printf("SifLoadModule MCMAN failed: %d\n", ret);
 		SleepThread();
 	}
 
@@ -54,30 +54,31 @@ void LoadModules()
 	
     if (ret < 0)
     {
-		printf("SifLoadModule MCSERV failed: %d\n", ret);
+		scr_printf("SifLoadModule MCSERV failed: %d\n", ret);
 		SleepThread();
 	}
 }
 
 int main()
 {
-    printf("main()\n");
-    g_MemcardStatus = new MemcardStatus();
-    g_MemcardFormat = new MemcardFormat();
-    g_FileWrite = new FileWrite();
-
+    init_scr();
+    scr_clear();
+    scr_setCursor(0);
+    scr_printf("main()\n");
+    
     SifInitRpc(0);
     LoadModules();
-    init_scr();
-    scr_setCursor(0);
     Pad::Init();
 
     if (mcInit(MC_TYPE_MC) < 0)
     {
-		printf("mcInit failed, stalling...\n");
+		scr_printf("mcInit failed, stalling...\n");
 		SleepThread();
 	}
 
+    g_MemcardStatus = new MemcardStatus();
+    g_MemcardFormat = new MemcardFormat();
+    g_FileWrite = new FileWrite();
     while (true)
     {
         Pad::Poll();
